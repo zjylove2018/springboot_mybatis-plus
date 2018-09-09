@@ -1,10 +1,11 @@
 package cn.zjy.dayong.demo.service.impl;
 
-import cn.zjy.dayong.demo.pojo.User;
 import cn.zjy.dayong.demo.mapper.UserMapper;
+import cn.zjy.dayong.demo.pojo.User;
 import cn.zjy.dayong.demo.service.UserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
