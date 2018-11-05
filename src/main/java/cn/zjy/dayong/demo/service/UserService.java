@@ -15,4 +15,9 @@ public interface UserService extends IService<User> {
 
     //mybatis原生查询对方方法
     User selectOneUserById(Integer longValue);
+
+    //根据用户名和密码去查询数据库信息
+    User selectUserByUsernameAndPassword(String username, String password);
+
+    User selectByUsername(String username);
 }

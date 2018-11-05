@@ -2,16 +2,9 @@ package cn.zjy.dayong.demo.mapper;
 
 import cn.zjy.dayong.demo.pojo.User;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 /**
- * <p>
-  *  Mapper 接口
- * </p>
- *
  * @author zjy
  * @since 2018-08-29
  */
@@ -44,4 +37,10 @@ public interface UserMapper extends BaseMapper<User> {
      *             "VALUES (#{username},#{age},#{address},#{sex},"  +
      *     void save(User user);
      */
+
+    //根据用户名和密码去查询数据库信息
+    User selectUserByUsernameAndPassword(@Param("username")String username,@Param("password")String password);
+
+    //判断用户名是否已被注册
+    User selectByUsername(@Param("username")String username);
 }

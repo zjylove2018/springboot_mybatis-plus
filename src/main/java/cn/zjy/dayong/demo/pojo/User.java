@@ -5,14 +5,12 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import java.io.Serializable;
 
 /**
- * <p>
- * 
- * </p>
- *
  * @author zjy
  * @since 2018-08-29
  */
 public class User implements Serializable {
+    public User() {
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -21,8 +19,43 @@ public class User implements Serializable {
 	private String name;
 	private Integer age;
 	private String address;
-	private String sex;
+	private String userGender;
+	private String username;
+	private String password;
+	private String userPhone;
+	private String userEmail;
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
 
 	public Long getId() {
 		return id;
@@ -56,22 +89,26 @@ public class User implements Serializable {
 		this.address = address;
 	}
 
-	public String getSex() {
-		return sex;
+	public String getUserGender() {
+		return userGender;
 	}
 
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setUserGender(String userGender) {
+		this.userGender = userGender;
 	}
 
 	@Override
 	public String toString() {
 		return "User{" +
-			"id=" + id +
-			", name=" + name +
-			", age=" + age +
-			", address=" + address +
-			", sex=" + sex +
-			"}";
+				"id=" + id +
+				", name='" + name + '\'' +
+				", age=" + age +
+				", address='" + address + '\'' +
+				", userGender='" + userGender + '\'' +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", userPhone='" + userPhone + '\'' +
+				", userEmail='" + userEmail + '\'' +
+				'}';
 	}
 }

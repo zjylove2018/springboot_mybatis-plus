@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjy.dayong.demo.mapper.UserMapper">
+    <resultMap type="User" id="UserResultMapper">
+        <id column="ID" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="address" property="address"/>
+        <result column="user_gender" property="userGender"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="user_phone" property="userPhone"/>
+        <result column="user_email" property="userEmail"/>
+    </resultMap>
+    <!-- 实现登录功能-->
+    <select id="selectUserByUsernameAndPassword" resultType="User" resultMap="UserResultMapper">
+        select * from user
+          where username = #{username}
+          and password = #{password}
+    </select>
+    <!-- 判断用户名是否已被注册-->
+    <select id="selectByUsername" resultType="User" resultMap="UserResultMapper">
+        select * from user
+          where username = #{username}
+    </select>
+</mapper>

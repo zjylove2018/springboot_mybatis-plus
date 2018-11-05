@@ -3,9 +3,11 @@ package cn.zjy.dayong.demo.controller;
 
 import cn.zjy.dayong.demo.pojo.User;
 import cn.zjy.dayong.demo.service.UserService;
+import cn.zjy.dayong.demo.utils.QrcodeUtils;
 import cn.zjy.dayong.demo.utils.ResponseMessage;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.zxing.common.BitMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>
- *  前端控制器
- * </p>
- *
  * @author zjy
  * @since 2018-08-29
  */
@@ -58,7 +59,7 @@ public class UserController {
      */
 	@RequestMapping("/getUserById/{id}")
     @ResponseBody
-	public ResponseMessage getUserById(@PathVariable Integer id){
+	public ResponseMessage getUserById(@PathVariable Integer id, HttpServletResponse resp){
         final String key = "user_" + id;
         ValueOperations<String, User> operations = redisTemplate.opsForValue();
         // 缓存存在
@@ -66,13 +67,17 @@ public class UserController {
         if (hasKey) {
             User user = operations.get(key);
             logger.info("从缓存中获取了用户:{} ", user.toString());
-            return new ResponseMessage().ok().put("从redis缓存中获取用户成功!",user);
+            Map<Object,Object> resultMap = new HashMap<>();
+            BitMatrix bm = QrcodeUtils.getQrcode(user.toString(),resp);
+            resultMap.put("user",user);
+            resultMap.put("Qrcode",bm);
+            return new ResponseMessage().ok().put("从redis缓存中获取用户成功!",resultMap);
         }
         User user = userService.selectById(id);
         //key:是redis里的key  user:是存放的对象   60:是缓存对象,默认时间是秒    TimeUnit.SECONDS:?
-        operations.set(key, user, 60, TimeUnit.SECONDS);
+        operations.set(key, user, 100, TimeUnit.SECONDS);
         logger.info("从数据库中获取到的用户对象,插入缓存:{}", user.toString());
-        return new ResponseMessage().ok().put("从数据库中获取用户成功!",user.toString());
+        return new ResponseMessage().ok().put("从数据库中获取用户成功!",user);
     }
 
     /**
@@ -86,8 +91,8 @@ public class UserController {
         user.setName("李李李李");
         user.setAge(27);
         user.setAddress("山西");
-        user.setSex("男");
-        userService.insert(user);
+        user.setUserGender("男");
+        logger.info("要进入rabbitMQ的用户对象为:{}",user);
         return new ResponseMessage().ok().put("添加用户成功!",user);
     }
 
@@ -122,20 +127,18 @@ public class UserController {
     @RequestMapping("/deleteUser/{id}")
     @ResponseBody
     public ResponseMessage deleteUser(@PathVariable Integer id){
-        final String key = "pagetUser_" + id;
+        final String key = "user_" + id;
         ValueOperations<String, User> operations = redisTemplate.opsForValue();
-        // 缓存存在
+        // 缓存存在先把缓存的删除掉再删除数据库的
         boolean hasKey = redisTemplate.hasKey(key);
         if (hasKey) {
-            User user = operations.get(key);
-            logger.info("从缓存中删除了用户:{} ",user);
-            return new ResponseMessage().ok().put("从redis缓存中删除用户成功!",user);
+            redisTemplate.delete(key);
         }
         User user = userService.selectById(id);
-        logger.info("查询到的用户为:{}",user );
+        logger.info("从数据库查询到的用户为:{}",user );
         boolean b = userService.deleteById(Integer.valueOf(id).longValue());
-        logger.info("是否成功删除用户:{}",b );
-        return new ResponseMessage().ok().put("是否成功删除用户!",b);
+        logger.info("是否成功从数据库删除用户:{}",b );
+        return new ResponseMessage().ok().put("是否成功从数据库删除用户!",b);
     }
 
     /**
@@ -148,7 +151,7 @@ public class UserController {
         //根据id查到一个user
         User user = userService.selectById(Integer.valueOf(id).longValue());
         logger.info("修改前的用户为:{}",user );
-        user.setSex("女");
+        user.setUserGender("女");
         user.setAge(22);
         boolean b = userService.updateById(user);
         logger.info("修改后的用户为:{}",user );
@@ -203,9 +206,4 @@ public class UserController {
         return new ResponseMessage().ok().put("原生mybatis从数据库中查询到的用户为!",user);
     }
 
-
-
-    /**
-     * springboot整合redis
-     */
 }

@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class ResponseMessage extends HashMap<String, Object> {
     public ResponseMessage() {
-        put("code", 0);
+        put("code", 200);
         put("msg", "success");
     }
 
