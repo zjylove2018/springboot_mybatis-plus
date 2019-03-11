@@ -1,12 +1,5 @@
 package cn.zjy.dayong.demo.utils;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
-
 /**
  * Created with IDEA
  * author:zjy
@@ -14,7 +7,7 @@ import java.io.IOException;
  * Time:10:24
  * 过滤器
  */
-@WebFilter
+/*@WebFilter
 public class MyFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -23,17 +16,35 @@ public class MyFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println(servletRequest.getParameter("name"));
         System.out.println("拦截中========拦截中========");
-        HttpServletRequest request = (HttpServletRequest)servletRequest;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse);
-        if(request.getRequestURI().indexOf("/index") != -1 ||
-                request.getRequestURI().indexOf("/asd") != -1 ||
-                request.getRequestURI().indexOf("/online") != -1 ||
-                request.getRequestURI().indexOf("/login") != -1 ){
+        HttpSession session = request.getSession();
+
+        //得到用户的请求
+        String request_uri = request.getRequestURI();
+        //得到web应用程序的上下文路径
+        String ctxPath = request.getContextPath();
+        // 去除上下文路径，得到剩余部分的路径
+        String uri = request_uri.substring(ctxPath.length());
+        //判断用户访问的是否是登录页面
+        if(uri.equals("/freemark/login") ||
+                uri.equals("/freemark/toLogin") ||
+                uri.equals("/freemark/toRegister") ||
+                uri.equals("/freemark/register")){
             filterChain.doFilter(servletRequest, servletResponse);
-        } else {
-            wrapper.sendRedirect("/login");
+            return;
+        }else {
+            //如果访问的不是登录和注册页面则判断用户是否登录
+            if(null != session.getAttribute("userSission") && "" != session.getAttribute("userSission")){
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }else {
+                //如果用户没有访问登录页面,也没有登录的话就跳转到去登录页面
+                request.setAttribute("err","您还未登录,请先登录");
+                wrapper.sendRedirect("/freemark/toLogin");
+            }
         }
     }
 
@@ -41,4 +52,4 @@ public class MyFilter implements Filter {
     public void destroy() {
         System.out.println("拦截器销毁========拦截器销毁========");
     }
-}
+}*/

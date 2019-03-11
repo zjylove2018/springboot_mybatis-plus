@@ -92,6 +92,9 @@ public class UserController {
         user.setAge(27);
         user.setAddress("山西");
         user.setUserGender("男");
+        userService.insert(user);
+        //TODO  添加完了用户给用户发送一封邮件,提示用户注册成功
+
         logger.info("要进入rabbitMQ的用户对象为:{}",user);
         return new ResponseMessage().ok().put("添加用户成功!",user);
     }
@@ -113,8 +116,9 @@ public class UserController {
             logger.info("从缓存中获取了用户:{} ", userList);
             return new ResponseMessage().ok().put("从redis缓存中获取用户集合成功!",userList);
         }
-        //key:是redis里的key  user:是存放的对象   60:是缓存对象,默认时间是秒    TimeUnit.SECONDS:?
         List<User> userList = userService.selectPage(new Page<User>(current,size)).getRecords();
+
+        //key:是redis里的key  user:是存放的对象   60:是缓存对象,默认时间是秒    TimeUnit.SECONDS:?
         operations.set(key, userList, 60, TimeUnit.SECONDS);
         logger.info("从数据库中获取到的用户对象,插入缓存:{}", userList);
         return new ResponseMessage().ok().put("从数据库中获取到分页查询用户成功!",userList);

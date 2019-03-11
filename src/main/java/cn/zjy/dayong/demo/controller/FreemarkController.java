@@ -5,8 +5,10 @@ import cn.zjy.dayong.demo.pojo.User;
 import cn.zjy.dayong.demo.service.UserService;
 import cn.zjy.dayong.demo.utils.JavaWebTokenUtils;
 import cn.zjy.dayong.demo.utils.ResponseMessage;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,6 +20,7 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,11 +53,14 @@ public class FreemarkController {
     @Autowired
     private Resource resource;
 
+    @Autowired
+    private AmqpTemplate rabbitTemplate;
+
     //访问路径:http://localhost:2080/freemark/index
     @RequestMapping("/index")
     public String index(ModelMap map){
         map.addAttribute("resource",resource);
-        return "index";
+        return "/index.html";
     }
 
     //访问路径:http://localhost:2080/freemark/center
@@ -109,6 +115,8 @@ public class FreemarkController {
             user.setPassword(newstr);
             //保存进数据库
             userService.insert(user);
+            //TODO  添加完了用户给用户发送一封邮件,提示用户注册成功
+
             return new ResponseMessage().ok().put("添加用户成功!",user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,15 +158,23 @@ public class FreemarkController {
             final String key = "user_" + user.getId();
             ValueOperations<String, User> operations = redisTemplate.opsForValue();
             operations.set(key, user, 100, TimeUnit.SECONDS);
-            logger.info("用户校验登录成功!插入缓存:{}", user.toString());
+            logger.info("用户校验登录成功!加入缓存:{}", user.toString());
             Map<String,Object> map = JavaWebTokenUtils.parserJavaWebToken(token);
             if(map != null){
                 Object object = map.get("user_id");
                 User user2 = userService.selectOneUserById((Integer)object);
                 if(username.equals(user2.getUsername())){
                     logger.info("token校验通过,是用户:{}", user2);
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("userSission",user2.getUsername());
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("username",user2.getUsername());
+                    jsonObject.put("password",user2.getPassword());
+                    rabbitTemplate.convertAndSend("exchange_login","login_key",jsonObject.toString());
+                    logger.info("rabbitMQ发送的消息为:{}",jsonObject.toString());
                 }else {
                     logger.info("token校验失败,可能被篡改过token!");
+                    return new ResponseMessage().error().put("token校验失败,可能被篡改过token!",token);
                 }
                 return new ResponseMessage().ok().put("用户登录成功!",user2);
             }else {
@@ -168,7 +184,7 @@ public class FreemarkController {
             }
         }else {
             request.setAttribute("loginMessageError","请输入正确的用户名或密码");
-            return new ResponseMessage().error().put("请输入正确的用户名或密码!",user.getUsername() + "/" + user.getPassword());
+            return new ResponseMessage().error().put("loginMessageError","用户名或密码输入错误!");
         }
     }
 }

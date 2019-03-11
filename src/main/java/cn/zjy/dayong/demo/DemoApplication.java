@@ -5,11 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = {"cn.zjy.dayong.demo.service","cn.zjy.dayong.demo.controller", "cn.zjy.dayong.demo.rabbitmqreceiver","cn.zjy.dayong.demo.rabbitmqserver","cn.zjy.dayong.demo.pojo"})
+@SpringBootApplication(scanBasePackages = {"cn.zjy.dayong.demo"})
 @MapperScan("cn.zjy.dayong.demo.mapper")
 @EnableCaching
 @ServletComponentScan
+//开启定时器
+@EnableScheduling
 public class DemoApplication {
 
     public static void main(String[] args) {
