@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created with IDEA
  * author:zjy
  * Date:2018/11/8
  * Time:10:06
+ * 定时器  @Scheduled(cron = "0 0/5 * * * ?")  5分钟的倍数时间执行一次
  */
 @Component
 public class QuartzUtils {
@@ -19,7 +19,6 @@ public class QuartzUtils {
     private static final Logger logger = LoggerFactory.getLogger(QuartzUtils.class);
     private int count = 1;
 
-    @RequestMapping("/quartz")
     @Scheduled(cron = "0 0/5 * * * ?")
     private void proces(){
         String content="这是第"+(count++)+"封邮件";

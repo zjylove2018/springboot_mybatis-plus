@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../static/../favicon.ico">
+    <script type="text/javascript" th:src="@{/jquery-3.2.1/jquery-3.2.1.js}"></script>
+    <title>公司报表</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <!-- 字符串拼接 <span th:text="'Welcome to our application, ' + ${user.name} + '!'">-->
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">大周科技有限公司</a>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="搜索.." aria-label="Search">
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="navbar-brand" th:href="@{/freemark/toLogin}"
+               th:unless="${session.userSission != null}" style="color:red;float:right;">登录</a>
+        </li>
+        <li class="nav-item text-nowrap">
+            <a class="navbar-brand" style="color:red;float:right;" th:href="@{/freemark/toRegister}">注册</a>
+        </li>
+        <li class="nav-item text-nowrap">
+            <a class="navbar-brand" th:href="@{/report/toOutLogin}"
+               th:if="${session.userSission != null} " style="color:red;float:right;"
+               onclick="if(!confirm('确定退出吗?')) {return false;};">退出</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <span data-feather="home"></span>
+                            主页 <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file"></span>
+                            订单
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            购物
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="users"></span>
+                            客户
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="bar-chart-2"></span>
+                            报告
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="layers"></span>
+                            集成
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>保存报告</span>
+                    <a class="d-flex align-items-center text-muted" href="#">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            本月
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            上个季度
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            社交参与
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            年终销售
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2">报表视图</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button class="btn btn-sm btn-outline-secondary">分享</button>
+                        <button class="btn btn-sm btn-outline-secondary">导出</button>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                        <span data-feather="calendar"></span>
+                        本周
+                    </button>
+                </div>
+            </div>
+
+            <canvas class="my-4" id="myChart" width="900" height="380"></canvas>
+
+            <h2>报表明细</h2>
+    <!--th:fragment="aaaa" 这里结果可以自定义 只要映射到controller层的返回结果就可以  return "thymeleaf/dashboard::aaaa";-->
+            <div id="asynchronous_refresh" class="table-responsive" th:fragment="asynchronous_refresh">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>开销地方</th>
+                            <th>开销金额(单价:元)</th>
+                            <th>开销数量</th>
+                            <th>开销总金额(元)</th>
+                            <th>开销日期</th>
+                            <th>开销人员</th>
+                            <th>是否已经审批</th>
+                        </tr>
+                    </thead>
+                    <tbody th:each="report:${session.reportList}">
+                        <tr>
+                            <td></td>
+                            <td><span th:text="${report.overheadName}"></span></td>
+                            <td><span th:text="${report.overheadMoney}"></span></td>
+                            <td><span th:text="${report.overheadCount}"></span></td>
+                            <td><span th:text="${report.sumMoney}"></span></td>
+                            <td><span th:text="${report.overheadDate}"></span></td>
+                            <td><span th:text="${report.overheadPeople}"></span></td>
+                            <td><span th:text="${report.isApproval}"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../../static/js/popper-utils.js"></script>
+<script src="../../static/js/bootstrap.min.js"></script>
+
+<!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<!-- Graphs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script language="JavaScript">
+    $(function () {
+        var ctx = document.getElementById("myChart");
+        $.ajax({
+            cache: false,   //true缓存页面  false不缓存页面
+            async: true,    //默认为true异步请求
+            type: 'post',
+            url: "http://localhost:2080/report/getDatas",
+            contentType: "application/json;charset=utf-8",
+            data: {},
+            dataType:"json",
+            success: function (data) {
+                alert("进来了没");
+                alert(data.labels);
+                alert(data.datasets);
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+                alert("成功了!")
+            }
+        });
+    })
+</script>
+<script language="JavaScript">
+    //******************************* 神仙 **********************
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+            datasets: [{
+                data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+                lineTension: 0,
+                backgroundColor: 'transparent',
+                borderColor: '#007bff',
+                borderWidth: 4,
+                pointBackgroundColor: '#007bff'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+    //******************************* 神仙 **********************
+</script>
+</body>
+    <script>
+        $(function () {
+            $('#asynchronous_refresh').load("/report/findAllReport");
+        })
+    </script>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>退出登录了</h3>
+    <script type="text/javascript">
+        onload = function() {
+            setInterval(go, 1000);
+        };
+        var x = 3; //利用了全局变量来执行
+        function go() {
+            x--;
+            if (x > 0) {
+                document.getElementById("sp").innerHTML = x; //每次设置的x的值都不一样了。
+            } else {
+                location.href = '/';
+            }
+        }
+    </script>
+    <div style="text-align: center;width: 200px;height: 100px;position: absolute;top: 200px;left: 33%;font-size: 18px;border: solid 1px ;line-height: 100px;">
+        退出成功
+        <span id="sp" style="color: red;">3</span>
+        秒后回首页
+    </div>
+</body>
+</html>

@@ -2,6 +2,7 @@ package cn.zjy.dayong.demo.controller;
 
 import cn.zjy.dayong.demo.pojo.Resource;
 import cn.zjy.dayong.demo.pojo.User;
+import cn.zjy.dayong.demo.service.ReportService;
 import cn.zjy.dayong.demo.service.UserService;
 import cn.zjy.dayong.demo.utils.JavaWebTokenUtils;
 import cn.zjy.dayong.demo.utils.ResponseMessage;
@@ -55,6 +56,9 @@ public class FreemarkController {
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
+
+    @Autowired
+    private ReportService reportService;
 
     //访问路径:http://localhost:2080/freemark/index
     @RequestMapping("/index")
@@ -140,8 +144,7 @@ public class FreemarkController {
      * @return
      */
     @RequestMapping("/login")
-    @ResponseBody
-    public ResponseMessage login(HttpServletRequest request, HttpServletResponse response){
+    public String login(HttpServletRequest request, HttpServletResponse response){
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         //TODO增加验证码
@@ -165,26 +168,28 @@ public class FreemarkController {
                 User user2 = userService.selectOneUserById((Integer)object);
                 if(username.equals(user2.getUsername())){
                     logger.info("token校验通过,是用户:{}", user2);
-                    HttpSession session = request.getSession(true);
+                    HttpSession session = request.getSession();
                     session.setAttribute("userSission",user2.getUsername());
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("username",user2.getUsername());
                     jsonObject.put("password",user2.getPassword());
-                    rabbitTemplate.convertAndSend("exchange_login","login_key",jsonObject.toString());
+                    rabbitTemplate.convertAndSend("exchange_login", "login_key", jsonObject.toString());
                     logger.info("rabbitMQ发送的消息为:{}",jsonObject.toString());
                 }else {
                     logger.info("token校验失败,可能被篡改过token!");
-                    return new ResponseMessage().error().put("token校验失败,可能被篡改过token!",token);
+                    return "error/errorLogin.ftl";
                 }
-                return new ResponseMessage().ok().put("用户登录成功!",user2);
+                logger.info("用户登录成功!");
+                return "thymeleaf/dashboard";
             }else {
                 logger.info("token校验失败,可能被篡改过token!");
-                request.setAttribute("loginMessageError","token校验失败,可能被篡改过token!");
-                return new ResponseMessage().error().put("token校验失败,可能被篡改过token!",token);
+                request.setAttribute("loginMessageError", "token校验失败, 可能被篡改过token!");
+                return "error/errorLogin.ftl";
             }
         }else {
             request.setAttribute("loginMessageError","请输入正确的用户名或密码");
-            return new ResponseMessage().error().put("loginMessageError","用户名或密码输入错误!");
+            logger.info("用户名或密码输入错误!");
+            return "error/error";
         }
     }
 }

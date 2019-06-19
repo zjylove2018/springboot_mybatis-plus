@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf测试</title>
+</head>
+<body>
+    <div>
+        姓名:<span th:text="'北京欢迎你' + ${user.username}"></span>
+        <br/>
+        年龄:<span th:text="${user.age}"></span>
+        <br/>
+        地址:<span th:utext="${user.address}"></span>
+    </div>
+    <p>--------------------------------</p>
+    <div th:object="${user}">
+        姓名:<span th:text="*{username}"></span>
+        <br/>
+        年龄:<span th:text="*{age}"></span>
+        <br/>
+        地址:<span th:utext="*{address}"></span>
+    </div>
+
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>地址</th>
+        </tr>
+        <tr th:each="u:${userList}">
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.age ge 25} ? old : young"></td>
+            <td th:utext="${u.address}"></td>
+            <div th:switch="${u.username}">
+                <p th:case="周周周">最帅的</p>
+                <p th:case="王王王">妮可罗宾</p>
+                <p th:case="张张张">娜美</p>
+            </div>
+        </tr>
+    </table>
+<br/>
+<br/>
+
+<a href="xx" th:href="@{/}">删除</a>
+    <!-- unless条件不满足的时候才显示 -->
+<a th:href="@{/}" th:unless="${user.username == null}">条件判断</a>
+    <!-- if条件满足的时候才显示 -->
+<a th:href="@{/}" th:if="${user.username != null}">条件判断2</a>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>Title</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h3>显示出来了......</h3>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>地址</th>
+        </tr>
+        <tr th:each="u:${userList}">
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.age ge 25} ? old : young"></td>
+            <td th:utext="${u.address}"></td>
+            <div th:switch="${u.username}">
+                <p th:case="周周周">最帅的</p>
+                <p th:case="王王王">妮可罗宾</p>
+                <p th:case="张张张">娜美</p>
+            </div>
+        </tr>
+    </table>
+    <h3>显示出来了......</h3>
+    <div class="center-block" style="width:800px">
+        <div class="row"  style="height:50px;  color: #ffffff">
+            <div class="col-md-1">CotentId</div>
+            <div class="col-md-2">Title</div>
+            <div class="col-md-5">Cotent</div>
+            <div class="col-md-1">UserId</div>
+            <div class="col-md-2">CreateTime</div>
+        </div>
+        <div th:if="${not #lists.isEmpty(userList)}">
+            <div class="row" th:each="content:${userList}" style="height:40px; margin-top: 1px; color: #ffffff">
+                <div class="col-md-1"><span th:text="${content.age}"></span></div>
+                <div class="col-md-2"><span th:text="${content.age}"></span></div>
+                <div class="col-md-5"><span th:utext="${content.address}"></span></div>
+                <div class="col-md-1"><span th:text="${content.age}"></span></div>
+                <div class="col-md-2"><span th:utext="${content.address}"></span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -42,7 +42,7 @@ public class MywebConfig implements WebMvcConfigurer {
     public ServletListenerRegistrationBean listenerRegist(){
         ServletListenerRegistrationBean srb = new ServletListenerRegistrationBean();
         srb.setListener(new MyHttpSessionListener());
-        System.out.println("listener");
+        System.out.println("监听器启动 listener");
         return srb;
     }
 }

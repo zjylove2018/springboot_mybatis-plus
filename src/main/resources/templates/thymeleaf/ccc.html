@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <title>首页</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+           th:href="@{/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <style type="text/css">
+        body{
+            font-family:微软雅黑;
+            font-size:14px;
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="topnav">
+        <nav class="navbar navbar-default" style="background: none repeat scroll 0 0 #394755;color:#fff;height:60px;">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" style="margin-right:20%;">
+                    <a class="navbar-brand" href="/mainframe" style="color:#fff;">测试&系统</a>
+                </div>
+                <!-- 退出 -->
+                <a class="navbar-brand" th:href="@{/toOutLogin}" style="color:#fff;float:right;"
+                   onclick="if(!confirm('确定退出吗?')) {return false;};">退出登录</a>
+                <!-- 欢迎语 -->
+                <div class="navbar-brand" style="margin-right:30px;font-size:15px;float:right;color:#f5d313;">
+                    欢迎您,<span th:text="${session.user1.username}">亲爱的用户</span> 现在是 <span id="time"></span>
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        function setTime(){
+                        var dt=new Date();
+                        var arr_week=new Array("星期日","星期一","星期二","星期三","星期四","星期五","星期六");
+                        var strWeek=arr_week[dt.getDay()];
+                        var strHour=dt.getHours();
+                        var strMinutes=dt.getMinutes();
+                        var strSeconds=dt.getSeconds();
+                        if (strMinutes<10) strMinutes="0"+strMinutes;
+                        if (strSeconds<10) strSeconds="0"+strSeconds;
+                        var strYear=dt.getFullYear()+"年";
+                        var strMonth=(dt.getMonth()+1)+"月";
+                        var strDay=dt.getDate()+"日";
+                        var strTime=strHour+":"+strMinutes+":"+strSeconds;
+                        time.innerHTML=strYear+strMonth+strDay+" "+strTime+"  "+strWeek;
+                        }
+                        setInterval("setTime()",1000);
+
+                        //20151013  安全退出
+                        function safeLogoutFun(){
+                        // onclick="if(!confirm('您确定删除吗？确定就真没了!!!')) {return false;};window.location.href='/ammeter/deleteNewDatas?id=${dataInfo.id }'"
+                            if(confirm("确定需要退出吗？")){
+                                $.ajax({
+                                    type: "POST",
+                                    url: "http://localhost:2080/outLogin",
+                                    dataType: "json",
+                                    error:function(){
+                                        alert("退出失败");
+                                    },
+                                    success: function(responseInfo){
+                                        if(responseInfo.status == 0){
+                                            window.location.replace("index");
+                                            //window.event.returnValue = false;//取消默认事件的处理
+                                        }
+                                        if(responseInfo.status == 1){
+                                            alert("退出失败");
+                                        }
+                                    }
+                                 });//end ajax
+                            }//end if confirm
+                        }
+
+                        var lastTime = new Date().getTime();
+                        var currentTime = new Date().getTime();
+                        var timeOut = 10 * 60 * 1000; //设置超时时间： 10分
+                        $(function(){
+                            /* 鼠标移动事件 */
+                            $(document).mouseover(function(){
+                                lastTime = new Date().getTime();//更新操作时间
+                                });
+                            });
+                        function testTime(){
+                            currentTime = new Date().getTime();
+                            //更新当前时间
+                            if(currentTime - lastTime > timeOut){
+                                //判断是否超时
+                                console.log("超时");
+                            }
+                        }
+                        /* 定时器  间隔1秒检测是否长时间未操作页面  */
+                        window.setInterval(testTime, 1000);
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 导航条 -->
+    <div layout:fragment="content"></div>
+    <!-- put the scripts below -->
+    <script src="../../static/jquery/2.1.4/jquery-2.1.4.min.js"
+        th:src="@{/jquery/2.1.4/jquery-2.1.4.min.js}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <!-- 存放具体业务页面需要引入的javascript文件 -->
+    <th:block layout:fragment = "bodyAssets"></th:block>
+
+    <div class="container-fluid all">
+        <div class="sidebar">
+            <ul class="nav">
+                <li><a th:href="@{/}">&nbsp;首页</a></li>
+                <li><a th:href="@{/}">&nbsp;增加用户</a></li>
+                <li><a th:href="@{/}">&nbsp;员工信息</a></li>
+                <li><a th:href="@{/}">&nbsp;工资信息</a></li>
+                <li><a th:href="@{/}">&nbsp;任务信息</a></li>
+                <!-- restful 风格动态传参 -->
+                <li><a th:href="@{'/user/getUserById/' + 26}">&nbsp;大勇</a></li>
+                <li><a th:href="@{/freemark/toLogin}">&nbsp;去登录页面</a></li>
+                <li><a th:href="@{/freemark/login}">&nbsp;登录页面</a></li>
+            </ul>
+        </div>
+
+        <div class="maincontent row">
+            <div th:fragment="content"></div>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>地址</th>
+        </tr>
+        <tr th:each="u:${session.userList}">
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.age ge 25} ? old : young"></td>
+            <td th:utext="${u.address}"></td>
+            <div th:switch="${u.username}">
+                <p th:case="周周周">最帅的</p>
+                <p th:case="王王王">妮可罗宾</p>
+                <p th:case="张张张">娜美</p>
+            </div>
+        </tr>
+    </table>
+</body>
+</html>

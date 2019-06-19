@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax测试</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" th:src="@{/jquery-3.2.1/jquery-3.2.1.js}"></script>
+</head>
+<body>
+    <!-- 字符串拼接 <span th:text="'Welcome to our application, ' + ${user.name} + '!'">-->
+    <div>
+        <span style="margin:0 auto;font-size: 26px" th:text="${refresh}"></span>
+        <button onClick="localRefresh()">点击刷新表格</button>
+    </div>
+    <div id="table_refresh" style="text-align: center;margin:0 auto;width: 900px" th:fragment="table_refresh">
+        <h1 th:text="AAAA"></h1>
+        <table width="100%" border="1" cellspacing="1" cellpadding="0">
+            <tr>
+                <td>Author</td>
+                <td>Book</td>
+                <td>Url</td>
+            </tr>
+            <tr th:each="book : ${userList}">
+                <td th:text="${book.age}"></td>
+                <td th:utext="${book.address}"></td>
+                <td th:text="${book.username}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script>
+    function localRefresh() {
+        // 装载局部刷新返回的页面
+        $('#table_refresh').load("/thymeleaf/user");
+    }
+    /*$(function () {
+        $('#table_refresh').load("/thymeleaf/user");
+    })*/
+</script>
+</html>

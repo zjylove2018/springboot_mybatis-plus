@@ -49,6 +49,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- AOP切面 *****************************  Begin -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!-- AOP切面 *****************************  End -->
+
         <!-- 数据库连接 *********************  Begin -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -87,6 +94,14 @@
         </dependency>
         <!-- Excel解析工具类  ********************** End -->
 
+        <!-- CSV解析工具类  ********************** End -->
+        <!--<dependency>
+            <groupId>net.sourceforge.javacsv</groupId>
+            <artifactId>javacsv</artifactId>
+            <version>2.1</version>
+        </dependency>-->
+        <!-- CSV解析工具类  ********************** End -->
+
         <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -111,6 +126,15 @@
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>
             <version>1.1.4</version>
+            <!-- 导入的activiti工作流依赖,需要排除persistence-api否则会报错
+             Consider defining a bean of type 'javax.persistence.EntityManagerFactory' in your configuration.
+             -->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.persistence</groupId>
+                    <artifactId>persistence-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--mybatis-plus依赖 -->
@@ -261,7 +285,37 @@
         </dependency>
         <!-- shiro框架 ***********************************  End-->
 
-        <!-- WebFlux风格 ***********************************  End-->
+        <!-- rocketmq框架 ***********************************  Begin-->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <!-- rocketmq框架 ***********************************  End-->
+
+        <!-- 简化javabean相关操作 ***********************************  Begin-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- 简化javabean相关操作 ***********************************  End-->
+
+        <!-- thymeleaf页面模版 ***********************************  Begin-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!-- thymeleaf页面模版 ***********************************  End-->
+
+        <!-- 异步请求框架 ***********************************  Begin-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+        <!-- 异步请求框架 ***********************************  End-->
+
+        <!-- WebFlux风格 ***********************************  Begin-->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
@@ -273,6 +327,22 @@
             <scope>test</scope>
         </dependency>-->
         <!-- WebFlux风格 ***********************************  End-->
+
+        <!-- data-jpa ***********************************  Begin-->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>1.5.6.RELEASE</version>
+        </dependency>-->
+        <!-- data-jpa ***********************************  End-->
+
+        <!-- activiti工作流引擎 ***********************************  Begin-->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+        <!-- activiti工作流引擎 ***********************************  End-->
     </dependencies>
 
         <build>

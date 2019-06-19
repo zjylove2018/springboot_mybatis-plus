@@ -35,7 +35,7 @@ public class QrcodeUtils {
         int height = 200;
         try {
             stream = resp.getOutputStream();
-            Map<EncodeHintType, Object> hintMap = new HashMap<>();
+            Map<EncodeHintType, Object> hintMap = new HashMap<EncodeHintType, Object>();
             hintMap.put(EncodeHintType.CHARACTER_SET,"utf-8");
             hintMap.put(EncodeHintType.MARGIN, 0);
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -52,6 +52,9 @@ public class QrcodeUtils {
                 g2.draw(new RoundRectangle2D.Float(75 , 75 , 50, 50, 20, 20));
             }else if(content.contains("我们")){
                 g2.drawImage(ImageIO.read(ResourceUtils.getFile("classpath:women.png")), 75 , 75 , 50, 50, null); // logo.png自行设置
+                g2.draw(new RoundRectangle2D.Float(75 , 75 , 50, 50, 20, 20));
+            }else if(content.contains("大周")){
+                g2.drawImage(ImageIO.read(ResourceUtils.getFile("classpath:dayong.jpg")), 75 , 75 , 50, 50, null); // logo.png自行设置
                 g2.draw(new RoundRectangle2D.Float(75 , 75 , 50, 50, 20, 20));
             }
             g2.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));

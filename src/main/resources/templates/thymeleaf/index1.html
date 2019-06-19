@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf模版引擎</title>
+</head>
+<body>
+    <h1 th:text="${name}"></h1> <!-- 在><里写东西页面不显示 -->
+    <h3>Thymeleaf模版引擎</h3>
+    <div th:switch="${name}">
+        <p th:case="zjy">最帅的</p>
+        <p th:case="王王王">妮可罗宾</p>
+        <p th:case="张张张">娜美</p>
+    </div>
+</body>
+</html>

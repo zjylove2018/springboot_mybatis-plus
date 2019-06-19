@@ -54,6 +54,7 @@ public class UserController {
     /**
      * 根据用户id查询用户   Restful 风格
      * 请求路径 : http://localhost:2080/user/getUserById/3
+     *              连着访问两次路径就可以出现二维码 id:26,37,38有图片
      * @param id
      * @return
      */

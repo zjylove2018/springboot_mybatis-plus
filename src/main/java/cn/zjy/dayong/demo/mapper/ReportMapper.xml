@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zjy.dayong.demo.mapper.ReportMapper">
+
+    <resultMap id="ReportResultMap" type="Report">
+        <id column="id" property="id"></id>
+        <result column="overhead_name" property="overheadName"></result>
+        <result column="overhead_money" property="overheadMoney"></result>
+        <result column="overhead_count" property="overheadCount"></result>
+        <result column="overhead_date" property="overheadDate"></result>
+        <result column="overhead_people" property="overheadPeople"></result>
+        <result column="is_approval" property="isApproval"></result>
+    </resultMap>
+
+    <!-- 查询所有的订单 -->
+    <select id="findAllReport" resultMap="ReportResultMap" resultType="Report">
+        select * from report
+    </select>
+</mapper>

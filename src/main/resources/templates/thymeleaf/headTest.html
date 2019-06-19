@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>head</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div th:fragment="commonNav">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">导航一</a></li>
+                    <li><a href="#">导航二</a></li>
+                    <li><a href="#">导航三</a></li>
+                    <li><a href="#">导航四</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <h3>显示出来了.这是head</h3>
+    <div class="container-fluid all">
+        <div class="sidebar">
+            <ul class="nav">
+                <li><a th:href="@{/}">&nbsp;首面</a></li>
+                <li><a th:href="@{/}">&nbsp;增加用户</a></li>
+                <li><a th:href="@{/}">&nbsp;员工信息</a></li>
+                <li><a th:href="@{/}">&nbsp;工资信息</a></li>
+                <li><a th:href="@{/}">&nbsp;任务信息</a></li>
+                <!-- restful 风格动态传参 -->
+                <li><a th:href="@{'/user/getUserById/' + ${user.age}}">&nbsp;大勇</a></li>
+                <li><a th:href="@{/freemark/toLogin}">&nbsp;去登录页面</a></li>
+                <li><a th:href="@{/freemark/login}">&nbsp;登录页面</a></li>
+            </ul>
+        </div>
+
+        <div class="maincontent row">
+            <div th:fragment="content"></div>
+        </div>
+    </div>
+
+    <a href="#top" id="goTop"><i class="fa fa-angle-up fa-3x"></i></a>
+</body>
+</html>

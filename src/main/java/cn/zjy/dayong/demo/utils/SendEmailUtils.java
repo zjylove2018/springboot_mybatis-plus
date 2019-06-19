@@ -21,14 +21,23 @@ public class SendEmailUtils {
     @Value("${spring.mail.username}")
     private String sendName;
 
+    @Value("${spring.mail.jndi-name}")
+    private String receiveName;
+
     @RequestMapping("/sendEmail")
-    public void sendEmailMessage(){
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(sendName);    //邮件发送方
-        simpleMailMessage.setTo(sendName);   //邮件接收方
-        simpleMailMessage.setSubject("主题:能收到不");
-        simpleMailMessage.setText("就是来坑你的...哈哈哈!!!");
-        javaMailSender.send(simpleMailMessage);
+    public ResponseMessage sendEmailMessage(){
+        try {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(sendName);    //邮件发送方
+            simpleMailMessage.setTo(receiveName);   //邮件接收方
+            simpleMailMessage.setSubject("主题:能收到不");
+            simpleMailMessage.setText("就是来坑你的...哈哈哈!!!");
+            javaMailSender.send(simpleMailMessage);
+            return new ResponseMessage().ok().put("发送邮件成功!", simpleMailMessage);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseMessage().error().put("发送邮件失败!", e);
+        }
     }
 
 }
